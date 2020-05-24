@@ -16,8 +16,8 @@ const int HEIGHT = 720;
 bool isRunning = false;
 int playerScore = 0;
 int opponentScore = 0;
-std::unique_ptr<Paddle> player = std::make_unique<Paddle>(30, HEIGHT / 2, 30, 100);
-std::unique_ptr<Paddle> opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 30, 100);
+std::unique_ptr<Paddle> player = std::make_unique<Paddle>(30, HEIGHT / 2, 20, 100);
+std::unique_ptr<Paddle> opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 20, 100);
 std::unique_ptr<Ball> ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, 15, 15);
 
 bool CheckRectangleCollision(const SDL_Rect& rectangleA, const SDL_Rect& rectangleB)
@@ -107,11 +107,33 @@ void Update(float)
     }
 
     SDL_Rect intersection = {0, 0, 0, 0}; 
-    if (SDL_IntersectRect(ball->GetRect(), player->GetRect(), &intersection) ||
-        SDL_IntersectRect(ball->GetRect(), opponent->GetRect(), &intersection))
+    if (SDL_IntersectRect(ball->GetRect(), player->GetRect(), &intersection))
     {
-        ball->SetVelX(-ball->GetVelX());
+        if (ball->GetRect()->x < WIDTH / 2 && ball->GetVelX() < 0)
+        {
+            if (ball->GetRect()->x + ball->GetRect()->w < player->GetRect()->x + player->GetRect()->w)
+            {
+                ball->SetVelY(-ball->GetVelY());
+            }
+            else
+            {
+                ball->SetVelX(-ball->GetVelX());
+            }
+        }
     }
+    intersection = {0, 0, 0, 0}; 
+    if (SDL_IntersectRect(ball->GetRect(), opponent->GetRect(), &intersection))
+    {
+        if (ball->GetRect()->x > WIDTH / 2 && ball->GetVelX() > 0)
+        {
+            ball->SetVelY(-ball->GetVelY());
+        }
+        else
+        {
+            ball->SetVelX(-ball->GetVelX());
+        }
+    }
+    
     ball->Move();
 }
 

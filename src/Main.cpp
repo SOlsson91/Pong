@@ -7,11 +7,12 @@
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Event event;
+
 const unsigned int FPS = 60;
 const unsigned int FRAME_TARGET_TIME = 1000.0f / FPS;
+const int WIDTH = 1280;
+const int HEIGHT = 720;
 
-int WIDTH = 1280;
-int HEIGHT = 720;
 bool isRunning = false;
 int playerScore = 0;
 int opponentScore = 0;
@@ -19,6 +20,16 @@ std::unique_ptr<Paddle> player = std::make_unique<Paddle>(30, HEIGHT / 2, 30, 10
 std::unique_ptr<Paddle> opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 30, 100);
 std::unique_ptr<Ball> ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, 15, 15);
 
+bool CheckRectangleCollision(const SDL_Rect& rectangleA, const SDL_Rect& rectangleB)
+{
+    return 
+    (
+        rectangleA.x + rectangleA.w > rectangleB.x &&
+        rectangleB.x + rectangleB.w > rectangleA.x &&
+        rectangleA.y + rectangleA.h > rectangleB.y &&
+        rectangleB.y + rectangleB.h > rectangleA.y
+    );
+}
 bool InitializeSDL()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING == 0))
@@ -58,12 +69,8 @@ void ProcessInput()
                 break;
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE)
-                {
                     isRunning = false;
-                }
-
                 break;
-
             default:
                 break;
         }
@@ -99,6 +106,12 @@ void Update(float)
         ball->SetVelX(-ball->GetVelX());
     }
 
+    SDL_Rect intersection = {0, 0, 0, 0}; 
+    if (SDL_IntersectRect(ball->GetRect(), player->GetRect(), &intersection) ||
+        SDL_IntersectRect(ball->GetRect(), opponent->GetRect(), &intersection))
+    {
+        ball->SetVelX(-ball->GetVelX());
+    }
     ball->Move();
 }
 
@@ -106,10 +119,12 @@ void Render()
 {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, player->GetRect());
     SDL_RenderFillRect(renderer, opponent->GetRect());
     SDL_RenderFillRect(renderer, ball->GetRect());
+
     SDL_RenderPresent(renderer);
 }
 

@@ -88,7 +88,7 @@ void ProcessInput()
     }
 }
 
-void Update(float)
+void CollisionHandling()
 {
     if (ball->GetRect()->y + ball->GetRect()->h > HEIGHT || ball->GetRect()->y < 0)
     {
@@ -132,8 +132,23 @@ void Update(float)
             }
         }
     }
-    
+}
+
+void Update(float)
+{
+    CollisionHandling();
     ball->Move();
+
+    if (ball->GetVelY() < 0)
+    {
+        if (opponent->GetRect()->y >= 0)
+            opponent->Move(-5);
+    }
+    else
+    {
+        if (opponent->GetRect()->y <= HEIGHT - opponent->GetRect()->h)
+            opponent->Move(5);
+    }
 }
 
 void Render()

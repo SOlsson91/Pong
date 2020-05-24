@@ -20,16 +20,6 @@ std::unique_ptr<Paddle> player = std::make_unique<Paddle>(30, HEIGHT / 2, 20, 10
 std::unique_ptr<Paddle> opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 20, 100);
 std::unique_ptr<Ball> ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, 15, 15);
 
-bool CheckRectangleCollision(const SDL_Rect& rectangleA, const SDL_Rect& rectangleB)
-{
-    return 
-    (
-        rectangleA.x + rectangleA.w > rectangleB.x &&
-        rectangleB.x + rectangleB.w > rectangleA.x &&
-        rectangleA.y + rectangleA.h > rectangleB.y &&
-        rectangleB.y + rectangleB.h > rectangleA.y
-    );
-}
 bool InitializeSDL()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING == 0))

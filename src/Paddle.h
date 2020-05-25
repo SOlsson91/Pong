@@ -4,7 +4,7 @@
 class Paddle
 {
 private:
-    SDL_Rect rect;
+    SDL_Rect m_Rect;
 public:
     Paddle(int x, int y, int width, int height);
     void Move(int y);

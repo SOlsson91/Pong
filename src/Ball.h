@@ -4,10 +4,9 @@
 class Ball
 {
 private:
-    SDL_Rect rect;
-    int velX;
-    int velY;
-
+    SDL_Rect m_Rect;
+    int m_VelX;
+    int m_VelY;
 public:
     Ball(int x, int y, int width, int height);
     void Move();

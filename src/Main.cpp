@@ -76,15 +76,20 @@ void ProcessInput()
         }
     }
     const Uint8* state = SDL_GetKeyboardState(NULL);
-    if (state[SDL_SCANCODE_UP] || state[SDL_SCANCODE_W])
+    if (state[SDL_SCANCODE_W])
     {
         if (player->GetRect()->y >= 0)
             player->Move(-10);
     }
-    if (state[SDL_SCANCODE_DOWN] || state[SDL_SCANCODE_S])
+    if (state[SDL_SCANCODE_S])
     {
         if (player->GetRect()->y <= HEIGHT - player->GetRect()->h)
             player->Move(10);
+    }
+    if (state[SDL_SCANCODE_R])
+    {
+        ball->ChangePosition(WIDTH / 2 -1, HEIGHT /2 - 1);
+        ball->SetVelX(-ball->GetVelX());
     }
 }
 
@@ -94,6 +99,20 @@ void CollisionHandling()
     {
         ball->SetVelY(-ball->GetVelY());
     }
+    if ((ball->GetRect()->x <= (player->GetRect()->x + player->GetRect()->w)) &&
+        (ball->GetRect()->y + ball->GetRect()->h >= player->GetRect()->y) &&
+        (ball->GetRect()->y <= player->GetRect()->y + player->GetRect()->h))
+    {
+        ball->SetVelX(-ball->GetVelX());
+    }
+
+    if ((ball->GetRect()->x + ball->GetRect()->w >= opponent->GetRect()->x) &&
+        (ball->GetRect()->y + ball->GetRect()->h >= opponent->GetRect()->y) &&
+        (ball->GetRect()->y <= opponent->GetRect()->y + opponent->GetRect()->h))
+    {
+        ball->SetVelX(-ball->GetVelX());
+    }
+
     if (ball->GetRect()->x + ball->GetRect()->w > WIDTH || ball->GetRect()->x < 0)
     {
         if (ball->GetRect()->x < WIDTH / 2)
@@ -104,33 +123,6 @@ void CollisionHandling()
         //SCORE
         ball->ChangePosition(WIDTH / 2, HEIGHT /2);
         ball->SetVelX(-ball->GetVelX());
-    }
-
-    if (CheckRectangleCollision(*ball->GetRect(), *player->GetRect()) ||
-        CheckRectangleCollision(*ball->GetRect(), *opponent->GetRect()))
-    {
-        if (ball->GetRect()->x < WIDTH / 2 && ball->GetVelX() < 0)
-        {
-            if (ball->GetRect()->x + ball->GetRect()->w < player->GetRect()->x + player->GetRect()->w)
-            {
-                ball->SetVelY(-ball->GetVelY());
-            }
-            else
-            {
-                ball->SetVelX(-ball->GetVelX());
-            }
-        }
-        else if (ball->GetRect()->x > WIDTH / 2 && ball->GetVelX() > 0)
-        {
-            if (ball->GetRect()->x > opponent->GetRect()->x)
-            {
-                ball->SetVelY(-ball->GetVelY());
-            }
-            else
-            {
-                ball->SetVelX(-ball->GetVelX());
-            }
-        }
     }
 }
 

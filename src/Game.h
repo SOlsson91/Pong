@@ -14,18 +14,18 @@ private:
     const int WIDTH = 1280;
     const int HEIGHT = 720;
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
-    SDL_Event event;
+    SDL_Window* m_Window;
+    SDL_Renderer* m_Renderer;
+    SDL_Event m_Event;
 
-    std::unique_ptr<Paddle> player;
-    std::unique_ptr<Paddle> opponent;
-    std::unique_ptr<Ball> ball;
+    std::unique_ptr<Paddle> m_Player;
+    std::unique_ptr<Paddle> m_Opponent;
+    std::unique_ptr<Ball> m_Ball;
 
-    bool isRunning;
-    int playerScore;
-    int opponentScore;
-    int ticksLastFrame;
+    bool m_IsRunning;
+    int m_PlayerScore;
+    int m_OpponentScore;
+    int m_TicksLastFrame;
 public:
     Game();
     bool Initialize();

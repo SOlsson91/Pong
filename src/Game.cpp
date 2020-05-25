@@ -2,13 +2,11 @@
 #include <iostream>
 
 Game::Game()
+    : m_IsRunning(false), m_PlayerScore(0), m_OpponentScore(0)
 {
-    player = std::make_unique<Paddle>(30, HEIGHT / 2, 20, 100);
-    opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 20, 100);
-    ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, 15, 15);
-    isRunning = false;
-    playerScore = 0;
-    opponentScore = 0;
+    m_Player = std::make_unique<Paddle>(30, HEIGHT / 2, 20, 100);
+    m_Opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 20, 100);
+    m_Ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, 15, 15);
 }
 
 bool Game::Initialize()
@@ -19,19 +17,19 @@ bool Game::Initialize()
         return false;
     }
 
-    window = SDL_CreateWindow(
+    m_Window = SDL_CreateWindow(
             NULL,
             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
             WIDTH, HEIGHT,
             SDL_WINDOW_BORDERLESS);
-    if (!window)
+    if (!m_Window)
     {
         std::cout << "Error creating SDL Window." << std::endl;
         return false;
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer)
+    m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
+    if (!m_Renderer)
     {
         std::cout << "Error creating SDL Renderer." << std::endl;
         return false;
@@ -44,29 +42,29 @@ void Game::ProcessInput()
     const Uint8* state = SDL_GetKeyboardState(NULL);
     if (state[SDL_SCANCODE_W])
     {
-        if (player->GetRect()->y >= 0)
-            player->Move(-10);
+        if (m_Player->GetRect()->y >= 0)
+            m_Player->Move(-10);
     }
     if (state[SDL_SCANCODE_S])
     {
-        if (player->GetRect()->y <= HEIGHT - player->GetRect()->h)
-            player->Move(10);
+        if (m_Player->GetRect()->y <= HEIGHT - m_Player->GetRect()->h)
+            m_Player->Move(10);
     }
 
-    while (SDL_PollEvent(&event) != 0)
+    while (SDL_PollEvent(&m_Event) != 0)
     {
-        switch (event.type)
+        switch (m_Event.type)
         {
             case SDL_QUIT:
-                isRunning = false;
+                m_IsRunning = false;
                 break;
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                    isRunning = false;
-                if (event.key.keysym.sym == SDLK_r)
+                if (m_Event.key.keysym.sym == SDLK_ESCAPE)
+                    m_IsRunning = false;
+                if (m_Event.key.keysym.sym == SDLK_r)
                 {
-                    ball->ChangePosition(WIDTH / 2 -1, HEIGHT /2 - 1);
-                    ball->SetVelX(-ball->GetVelX());
+                    m_Ball->ChangePosition(WIDTH / 2 -1, HEIGHT /2 - 1);
+                    m_Ball->SetVelX(-m_Ball->GetVelX());
                 }
                 break;
             default:
@@ -77,59 +75,59 @@ void Game::ProcessInput()
 
 void Game::CollisionHandling()
 {
-    if ((ball->GetRect()->x == (player->GetRect()->x + player->GetRect()->w)) &&
-        (ball->GetRect()->y + ball->GetRect()->h >= player->GetRect()->y) &&
-        (ball->GetRect()->y <= player->GetRect()->y + player->GetRect()->h))
+    if ((m_Ball->GetRect()->x == (m_Player->GetRect()->x + m_Player->GetRect()->w)) &&
+        (m_Ball->GetRect()->y + m_Ball->GetRect()->h >= m_Player->GetRect()->y) &&
+        (m_Ball->GetRect()->y <= m_Player->GetRect()->y + m_Player->GetRect()->h))
     {
-        ball->SetVelX(-ball->GetVelX());
+        m_Ball->SetVelX(-m_Ball->GetVelX());
     }
 
-    if ((ball->GetRect()->x + ball->GetRect()->w == opponent->GetRect()->x) &&
-        (ball->GetRect()->y + ball->GetRect()->h >= opponent->GetRect()->y) &&
-        (ball->GetRect()->y <= opponent->GetRect()->y + opponent->GetRect()->h)) {
-        ball->SetVelX(-ball->GetVelX());
+    if ((m_Ball->GetRect()->x + m_Ball->GetRect()->w == m_Opponent->GetRect()->x) &&
+        (m_Ball->GetRect()->y + m_Ball->GetRect()->h >= m_Opponent->GetRect()->y) &&
+        (m_Ball->GetRect()->y <= m_Opponent->GetRect()->y + m_Opponent->GetRect()->h)) {
+        m_Ball->SetVelX(-m_Ball->GetVelX());
     }
 
-    if (ball->GetRect()->y + ball->GetRect()->h > HEIGHT || ball->GetRect()->y < 0)
+    if (m_Ball->GetRect()->y + m_Ball->GetRect()->h > HEIGHT || m_Ball->GetRect()->y < 0)
     {
-        ball->SetVelY(-ball->GetVelY());
+        m_Ball->SetVelY(-m_Ball->GetVelY());
     }
 
-    if (ball->GetRect()->x + ball->GetRect()->w > WIDTH || ball->GetRect()->x < 0)
+    if (m_Ball->GetRect()->x + m_Ball->GetRect()->w > WIDTH || m_Ball->GetRect()->x < 0)
     {
-        if (ball->GetRect()->x < WIDTH / 2)
-            opponentScore++;
+        if (m_Ball->GetRect()->x < WIDTH / 2)
+            m_OpponentScore++;
         else
-            playerScore++;
-        std::cout << "PLAYER: " << playerScore << std::endl << "OPPONENT: " << opponentScore << std::endl;
-        ball->ChangePosition(WIDTH / 2, HEIGHT /2);
-        ball->SetVelX(-ball->GetVelX());
+            m_PlayerScore++;
+        std::cout << "PLAYER: " << m_PlayerScore << std::endl << "OPPONENT: " << m_OpponentScore << std::endl;
+        m_Ball->ChangePosition(WIDTH / 2, HEIGHT /2);
+        m_Ball->SetVelX(-m_Ball->GetVelX());
     }
 }
 
 void Game::OpponentAI()
 {
-    if (ball->GetVelY() < 0)
+    if (m_Ball->GetVelY() < 0)
     {
-        if (opponent->GetRect()->y >= 0)
-            opponent->Move(-5);
+        if (m_Opponent->GetRect()->y >= 0)
+            m_Opponent->Move(-5);
     }
     else
     {
-        if (opponent->GetRect()->y <= HEIGHT - opponent->GetRect()->h)
-            opponent->Move(5);
+        if (m_Opponent->GetRect()->y <= HEIGHT - m_Opponent->GetRect()->h)
+            m_Opponent->Move(5);
     }
 }
 
 void Game::Run()
 {
-    isRunning = true;
-    while (isRunning)
+    m_IsRunning = true;
+    while (m_IsRunning)
     {
-        while (!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TARGET_TIME));
-        float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+        while (!SDL_TICKS_PASSED(SDL_GetTicks(), m_TicksLastFrame + FRAME_TARGET_TIME));
+        float deltaTime = (SDL_GetTicks() - m_TicksLastFrame) / 1000.0f;
         deltaTime = (deltaTime > 0.05f) ? 0.05f : deltaTime;
-        ticksLastFrame = SDL_GetTicks();
+        m_TicksLastFrame = SDL_GetTicks();
         ProcessInput();
         Update();
         Render();
@@ -139,26 +137,26 @@ void Game::Run()
 void Game::Update()
 {
     CollisionHandling();
-    ball->Move();
+    m_Ball->Move();
     OpponentAI();
 }
 
 void Game::Render() const
 {
-    SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
-    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(m_Renderer, 21, 21, 21, 255);
+    SDL_RenderClear(m_Renderer);
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderFillRect(renderer, player->GetRect());
-    SDL_RenderFillRect(renderer, opponent->GetRect());
-    SDL_RenderFillRect(renderer, ball->GetRect());
+    SDL_SetRenderDrawColor(m_Renderer, 255, 255, 255, 255);
+    SDL_RenderFillRect(m_Renderer, m_Player->GetRect());
+    SDL_RenderFillRect(m_Renderer, m_Opponent->GetRect());
+    SDL_RenderFillRect(m_Renderer, m_Ball->GetRect());
 
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(m_Renderer);
 }
 
 void Game::Clear() const
 {
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(m_Renderer);
+    SDL_DestroyWindow(m_Window);
     SDL_Quit();
 }

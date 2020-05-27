@@ -13,7 +13,7 @@ bool Game::Initialize()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING == 0))
     {
-        std::cout << "Error Initializing SDL" << std::endl;
+        std::cerr << "Error Initializing SDL" << std::endl;
         return false;
     }
 
@@ -24,14 +24,14 @@ bool Game::Initialize()
             SDL_WINDOW_BORDERLESS);
     if (!m_Window)
     {
-        std::cout << "Error creating SDL Window." << std::endl;
+        std::cerr << "Error creating SDL Window." << std::endl;
         return false;
     }
 
     m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
     if (!m_Renderer)
     {
-        std::cout << "Error creating SDL Renderer." << std::endl;
+        std::cerr << "Error creating SDL Renderer." << std::endl;
         return false;
     }
     return true;

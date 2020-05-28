@@ -1,7 +1,9 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include "./Paddle.h"
 #include "./Ball.h"
@@ -17,6 +19,8 @@ private:
     SDL_Window* m_Window;
     SDL_Renderer* m_Renderer;
     SDL_Event m_Event;
+    TTF_Font* m_Font;
+    SDL_Color m_TextColor;
 
     std::unique_ptr<Paddle> m_Player;
     std::unique_ptr<Paddle> m_Opponent;
@@ -34,6 +38,7 @@ public:
     void OpponentAI();
     void Run();
     void Update();
-    void Render() const;
+    void Render();
     void Clear() const;
+    void RenderText(std::string text, int x, int y);
 };

@@ -1,5 +1,4 @@
 #include "./Game.h"
-#include <iostream>
 
 Game::Game()
     : m_IsRunning(false), m_PlayerScore(0), m_OpponentScore(0)
@@ -14,6 +13,11 @@ bool Game::Initialize()
     if (SDL_Init(SDL_INIT_EVERYTHING == 0))
     {
         std::cerr << "Error Initializing SDL" << std::endl;
+        return false;
+    }
+    if (TTF_Init() == -1)
+    {
+        std::cerr << "Error loading TTF" << std::endl;
         return false;
     }
 
@@ -34,6 +38,14 @@ bool Game::Initialize()
         std::cerr << "Error creating SDL Renderer." << std::endl;
         return false;
     }
+
+    m_Font = TTF_OpenFont("./fonts/libel-suit.ttf", 50);
+    if (m_Font == nullptr)
+    {
+        std::cerr << "Error loing font" << std::endl;
+        return false;
+    }
+    m_TextColor = { 255, 255, 255, 255 };
     return true;
 }
 
@@ -141,7 +153,19 @@ void Game::Update()
     OpponentAI();
 }
 
-void Game::Render() const
+void Game::RenderText(std::string text, int posX, int posY)
+{
+    SDL_Rect rect;
+    SDL_Surface* surface = TTF_RenderText_Solid(m_Font, text.c_str(), m_TextColor);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(m_Renderer, surface);
+    SDL_FreeSurface(surface);
+    SDL_QueryTexture( texture, NULL, NULL, &rect.w, &rect.h);
+    rect.x = posX;
+    rect.y = posY;
+    SDL_RenderCopy(m_Renderer, texture, nullptr, &rect);
+}
+
+void Game::Render()
 {
     SDL_SetRenderDrawColor(m_Renderer, 21, 21, 21, 255);
     SDL_RenderClear(m_Renderer);
@@ -151,12 +175,17 @@ void Game::Render() const
     SDL_RenderFillRect(m_Renderer, m_Opponent->GetRect());
     SDL_RenderFillRect(m_Renderer, m_Ball->GetRect());
 
+    RenderText(std::to_string(m_PlayerScore), WIDTH / 2 - 40, 20);
+    RenderText(std::to_string(m_OpponentScore), WIDTH / 2 + 40, 20);
+
     SDL_RenderPresent(m_Renderer);
 }
 
 void Game::Clear() const
 {
+    TTF_CloseFont(m_Font);
     SDL_DestroyRenderer(m_Renderer);
     SDL_DestroyWindow(m_Window);
+    TTF_Quit();
     SDL_Quit();
 }

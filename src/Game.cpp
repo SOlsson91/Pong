@@ -3,9 +3,9 @@
 Game::Game()
     : m_IsRunning(false), m_PlayerScore(0), m_OpponentScore(0)
 {
-    m_Player = std::make_unique<Paddle>(30, HEIGHT / 2, 20, 100);
-    m_Opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, 20, 100);
-    m_Ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, 15, 15);
+    m_Player = std::make_unique<Paddle>(30, HEIGHT / 2, PADDLEWIDTH, PADDLEHEIGHT);
+    m_Opponent = std::make_unique<Paddle>(WIDTH - 60, HEIGHT / 2, PADDLEWIDTH, PADDLEHEIGHT);
+    m_Ball = std::make_unique<Ball>(WIDTH / 2, HEIGHT /2, BALLSIZE, BALLSIZE);
 }
 
 bool Game::Initialize()

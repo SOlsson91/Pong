@@ -15,6 +15,9 @@ private:
     const unsigned int FRAME_TARGET_TIME = 1000.0f / FPS;
     const int WIDTH = 1280;
     const int HEIGHT = 720;
+    const int PADDLEWIDTH = 20;
+    const int PADDLEHEIGHT = 100;
+    const int BALLSIZE = 15;
 
     SDL_Window* m_Window;
     SDL_Renderer* m_Renderer;

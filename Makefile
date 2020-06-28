@@ -4,10 +4,9 @@ CXXFILES = $(shell find src -maxdepth 1 -type f -name '*.cpp')
 CXXOBJECTS = $(CXXFILES:.cpp=.o)
 
 CXXFLAGS = -Wall -Wextra -g `sdl2-config --cflags` -std=c++17
-LDFLAGS = `sdl2-config --libs` \
-		  -lSDL2 -lSDL2_ttf -lSDL2_image -llua5.3
+LDFLAGS = -lSDL2 -lSDL2_ttf -lSDL2_image
 
-INCLUDE = -I"./lib/lua" -I"/usr/include/SDL"
+INCLUDE = -I"/usr/include/SDL"
 
 SOURCES = $(CXXFILES)
 OBJECTS = $(CXXOBJECTS)

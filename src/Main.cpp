@@ -1,4 +1,5 @@
 #include "./Game.h"
+#include "./GameState.h"
 
 int main()
 {

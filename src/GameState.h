@@ -13,4 +13,4 @@ public:
 	void Update(float deltaTime) override;
 	void Render() override;
 	void ProcessInput() override;
-}
+};

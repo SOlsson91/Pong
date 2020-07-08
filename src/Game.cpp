@@ -96,7 +96,8 @@ void Game::CollisionHandling()
 
     if ((m_Ball->GetRect()->x + m_Ball->GetRect()->w == m_Opponent->GetRect()->x) &&
         (m_Ball->GetRect()->y + m_Ball->GetRect()->h >= m_Opponent->GetRect()->y) &&
-        (m_Ball->GetRect()->y <= m_Opponent->GetRect()->y + m_Opponent->GetRect()->h)) {
+        (m_Ball->GetRect()->y <= m_Opponent->GetRect()->y + m_Opponent->GetRect()->h))
+	{
         m_Ball->SetVelX(-m_Ball->GetVelX());
     }
 

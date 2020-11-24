@@ -15,6 +15,7 @@ bool Game::Initialize()
         std::cerr << "Error Initializing SDL" << std::endl;
         return false;
     }
+
     if (TTF_Init() == -1)
     {
         std::cerr << "Error loading TTF" << std::endl;
@@ -32,14 +33,16 @@ bool Game::Initialize()
         return false;
     }
 
-    m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
+    const int driverIndex = -1;
+    m_Renderer = SDL_CreateRenderer(m_Window, driverIndex, SDL_RENDERER_ACCELERATED);
     if (!m_Renderer)
     {
         std::cerr << "Error creating SDL Renderer." << std::endl;
         return false;
     }
 
-    m_Font = TTF_OpenFont("./fonts/libel-suit.ttf", 50);
+    const int fontSize = 50;
+    m_Font = TTF_OpenFont("./fonts/libel-suit.ttf", fontSize);
     if (m_Font == nullptr)
     {
         std::cerr << "Error loing font" << std::endl;
